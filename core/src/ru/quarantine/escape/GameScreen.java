@@ -71,6 +71,8 @@ public class GameScreen implements Screen {
 
         modelInstance.transform.rotate(0, 10, 0, 0);
         modelInstance.transform.translate(0, 0, 0);
+        modelInstance.transform.scale(0.05f,0.05f,0.05f);
+
 
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
