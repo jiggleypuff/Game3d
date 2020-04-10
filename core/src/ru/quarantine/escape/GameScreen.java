@@ -1,12 +1,12 @@
 package ru.quarantine.escape;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.UBJsonReader;
 
 import java.util.Vector;
 
-public class TestG3DB implements Screen {
+public class GameScreen implements Screen {
     final MyGdxGame game;
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
@@ -33,6 +33,8 @@ public class TestG3DB implements Screen {
 
     public CameraInputController camController;
 
+    private AssetManager assets;
+
     AndroidGameControls androidGameControls;
 
     Player player;
@@ -41,14 +43,15 @@ public class TestG3DB implements Screen {
     private Skin skin;
     private DecalBatch decalBatch;
 
+    private boolean loadingModel = false;
 
-    public TestG3DB(final MyGdxGame myGdxGame) {
+    public GameScreen(final MyGdxGame myGdxGame) {
         game = myGdxGame;
 
         camera = new PerspectiveCamera(75, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        camera = new OrthographicCamera();
 //        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(0f,3f,10f);
+        camera.position.set(0f,0f,0f);
         camera.lookAt(0f,0f,0f);
         camera.near = 0.1f;
         camera.far = 300.0f;
@@ -72,13 +75,13 @@ public class TestG3DB implements Screen {
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1.0f));
 
-        var cameraController = new OrthographicCameraController(camera, modelInstance);
+       // var cameraController = new OrthographicCameraController(camera, modelInstance);
         // Handle inputs.
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        // TODO add any game-related actions you want to handle before the camera.
-        inputMultiplexer.addProcessor(new GestureDetector(cameraController));
-        inputMultiplexer.addProcessor(cameraController);
-        Gdx.input.setInputProcessor(inputMultiplexer);
+//        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+//        // TODO add any game-related actions you want to handle before the camera.
+//        inputMultiplexer.addProcessor(new GestureDetector(cameraController));
+//        inputMultiplexer.addProcessor(cameraController);
+//        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     public void update(){
@@ -96,6 +99,9 @@ public class TestG3DB implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.A)) player.moveLeft();
         if(Gdx.input.isKeyPressed(Input.Keys.D)) player.moveRight();
 
+        if(Gdx.input.isKeyPressed(Input.Keys.X)) player.moveUp();
+        if(Gdx.input.isKeyPressed(Input.Keys.C)) player.moveDown();
+
         if(Gdx.input.isKeyPressed(Input.Keys.Q)) Gdx.app.exit();
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))  player.turnLeft();
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) player.turnRight();
@@ -104,53 +110,17 @@ public class TestG3DB implements Screen {
     @Override
     public void show() {
         decals = new Vector<Decal>();
-//        enemyImgs = new Vector<Texture>();
-//        enemyImgRegions = new Vector<TextureRegion>();
 
         float aspectRatio = (float) 800 / (float) 480;
         camera = new PerspectiveCamera(67, 2f * aspectRatio, 2f);
         camera.near = 0.1f;
-
-//        floorTex = new Texture("floortex.png");
-//        floorTex.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        
-//        enemyImgs.add(new Texture("enemy1.png"));
-//        enemyImgs.add(new Texture("enemy2.png"));
-        
-//        for(Texture t : enemyImgs){
-//            enemyImgRegions.add(new TextureRegion(t));
-//        }
 
         VertexAttribute[] vaa = new VertexAttribute[3];
         vaa[0] =  new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE );
         vaa[1] = new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0" ) ;
         vaa[2] = new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 4, ShaderProgram.COLOR_ATTRIBUTE );
 
-        //set up floor (It's a single quad Mesh).
-//        mesh = new Mesh(true, 4, 6, vaa);
-
-//        mesh.setVertices(new float[] {
-//                //x,y,z				//u, v		//r,g,b,a
-//                -10f, -1f, -10,		0,10,      1,0,0,0.1f, //define counter clock wise vertices
-//                10f,  -1f, -10,		10,10,	   1,0,0,0.7f,
-//                10f,  -1f, 10,		10,0,	   1,0,0,0.5f,
-//                -10f, -1f, 10, 		0,0,	   1,0,0,1
-//        });
-
-//        mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0});
-
-//        mesh.getVertexAttribute(VertexAttributes.Usage.Position).alias = "a_position";
-
-//        String vertexShader = Gdx.files.internal("vert.glsl").readString();
-//        String  fragmentShader = Gdx.files.internal("frag.glsl").readString();
-//        shaderProgram = new ShaderProgram(vertexShader,fragmentShader);
-
         decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
-
-//        decals.add(Decal.newDecal(1, 1, enemyImgRegions.get(0), true));
-//        for(int i = 0; i < 4; i++){
-//            decals.add(Decal.newDecal(1, 1, enemyImgRegions.get(1), true));
-//        }
 
         player = new Player();
 
@@ -181,20 +151,6 @@ public class TestG3DB implements Screen {
         camera.position.set(player.getPos());
         camera.lookAt( player.getPos().x + (float) Math.sin(Math.toRadians(player.getYaw())), player.getPos().y,  player.getPos().z - (float) Math.cos(Math.toRadians(player.getYaw())));
         camera.update();
-
-//        floorTex.bind();
-//        shaderProgram.begin();
-//        shaderProgram.setUniformMatrix("u_projTrans", camera.combined);
-//        shaderProgram.setUniformi("u_texture", 0);
-//        mesh.render(shaderProgram, GL20.GL_TRIANGLES);
-//        shaderProgram.end();
-
-        //set decals up for visual testing.
-//        decals.get(0).setPosition(0,-0.5f,0);
-//        decals.get(1).setPosition(-1,-0.5f,-1);
-//        decals.get(2).setPosition(-1,-0.5f,1);
-//        decals.get(3).setPosition(1,-0.5f,1);
-//        decals.get(4).setPosition(1,-0.5f,-1);
 
         for(Decal d : decals){
             d.lookAt(camera.position, camera.up);
