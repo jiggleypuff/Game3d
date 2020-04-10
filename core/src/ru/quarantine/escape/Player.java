@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 public class Player {
     private Vector3 position;
     private float yaw = 0;
-    private float speed = 1.3f;
+    private float speed = 1f;
     private float rotSpeed = 2f;
 
     public Player(){
@@ -26,6 +26,7 @@ public class Player {
         move.z = (float) -Math.cos(Math.toRadians(yaw));
         move.scl(speed);
         position.add(move);
+        System.out.println("POS: " + position.x + ", " + position.y + ", " + position.z);
     }
 
     public void moveBackward(){
@@ -34,6 +35,7 @@ public class Player {
         move.z = (float) Math.cos(Math.toRadians(yaw));
         move.scl(speed);
         position.add(move);
+        System.out.println("POS: " + position.x + ", " + position.y + ", " + position.z);
     }
 
     public void moveLeft(){
@@ -42,6 +44,7 @@ public class Player {
         move.z = (float) -Math.cos(Math.toRadians(yaw - 90));
         move.scl(speed);
         position.add(move);
+        System.out.println("POS: " + position.x + ", " + position.y + ", " + position.z);
     }
 
     public void moveRight(){
@@ -50,6 +53,7 @@ public class Player {
         move.z = (float) -Math.cos(Math.toRadians(yaw + 90));
         move.scl(speed);
         position.add(move);
+        System.out.println("POS: " + position.x + ", " + position.y + ", " + position.z);
     }
 
     public void moveUp(){
@@ -57,6 +61,7 @@ public class Player {
         move.y = 1;
         move.scl(speed);
         position.add(move);
+        System.out.println("POS: " + position.x + ", " + position.y + ", " + position.z);
     }
 
     public void moveDown(){
@@ -64,6 +69,7 @@ public class Player {
         move.y = -1;
         move.scl(speed);
         position.add(move);
+        System.out.println("POS: " + position.x + ", " + position.y + ", " + position.z);
     }
 
     public void turnLeft(){

@@ -65,7 +65,7 @@ public class GameScreen implements Screen {
         // G3DB -----------------------------------------------------
         UBJsonReader jsonReader = new UBJsonReader();
         G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
-        model = modelLoader.loadModel(Gdx.files.getFileHandle("g3db/convertedModel.g3db", Files.FileType.Internal));
+        model = modelLoader.loadModel(Gdx.files.getFileHandle("g3db/road2.g3db", Files.FileType.Internal));
         modelInstance = new ModelInstance(model);
         // ----------------------------------------------------------
 
